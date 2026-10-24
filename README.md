@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # HAND TRACKING CAR DODGE USING HSV BLUE COLOR DETECTION
 
 Game arcade balapan mobil 2D top-down yang dikendalikan menggunakan gerakan tangan melalui deteksi objek berwarna biru dengan metode **HSV Color Segmentation** (OpenCV). 
@@ -215,3 +216,7 @@ Semua 13 pengujian (logika jalur, invulnerability, pergerakan pemain, algoritma 
 | **Izin webcam di Linux** | User belum masuk ke grup `video`. | Jalankan perintah `sudo usermod -aG video $USER`, lalu restart terminal/sesi. |
 | **Audio tidak bersuara di Linux** | Sistem audio ALSA/PulseAudio tidak aktif. | Game otomatis menonaktifkan audio secara aman tanpa crash jika audio server tidak ditemukan. |
 | **Mobil tidak mau berpindah jalur** | Luas objek biru kurang dari `MIN_CONTOUR_AREA`. | Dekatkan objek biru ke kamera atau turunkan nilai `MIN_CONTOUR_AREA` di `config.py` (misal ke 800). |
+=======
+# Project-1-Mini-Game-Based-on-Hand-Color
+Project 1 - Mini Game Based on Hand Color
+>>>>>>> a3c6c10508770c8c9fdb559c8ff914626bd9265b
