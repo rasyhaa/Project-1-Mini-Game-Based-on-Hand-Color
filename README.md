@@ -1,222 +1,248 @@
-<<<<<<< HEAD
-# HAND TRACKING CAR DODGE USING HSV BLUE COLOR DETECTION
+# Hand Tracking Car Dodge — HSV Blue Detection
 
-Game arcade balapan mobil 2D top-down yang dikendalikan menggunakan gerakan tangan melalui deteksi objek berwarna biru dengan metode **HSV Color Segmentation** (OpenCV). 
+Game arcade balapan mobil 2D dengan sudut pandang *top-down*. Pemain mengendalikan mobil menggunakan gerakan objek berwarna biru yang dideteksi melalui **HSV Color Segmentation** dengan OpenCV.
 
-> **Catatan Arsitektur:** Proyek ini **100% murni menggunakan Computer Vision klasik** (Color Thresholding, Morphological Operations, Contours, & Image Moments). Sama sekali **TIDAK menggunakan MediaPipe, Machine Learning, maupun Deep Learning**.
+> **Pendekatan computer vision:** Proyek ini menggunakan teknik computer vision klasik, yaitu color thresholding, morphological operations, contour detection, dan image moments. Proyek ini tidak menggunakan MediaPipe, machine learning, atau deep learning.
 
----
+## Daftar Isi
 
-## 1. FITUR UTAMA
+- [Fitur Utama](#fitur-utama)
+- [Struktur Proyek](#struktur-proyek)
+- [Persyaratan Sistem](#persyaratan-sistem)
+- [Instalasi](#instalasi)
+- [Menjalankan Game](#menjalankan-game)
+- [Kontrol Permainan](#kontrol-permainan)
+- [Cara Kerja Deteksi HSV](#cara-kerja-deteksi-hsv)
+- [Kalibrasi HSV](#kalibrasi-hsv)
+- [Menjalankan Pengujian](#menjalankan-pengujian)
+- [Troubleshooting](#troubleshooting)
 
-- **Sistem 3 Jalur Mobil Presisi (Strict 3-Lane Architecture):**
-  - **Lane 0 (Kiri):** $X = 135$ px
-  - **Lane 1 (Tengah):** $X = 305$ px
-  - **Lane 2 (Kanan):** $X = 475$ px
-  - Posisi mobil dihitung langsung dari titik tengah jalur (`player_x = lane_centers[current_lane]`).
-  - Mobil tidak akan pernah berhenti di antara dua jalur atau berada di atas marka pembatas.
-- **Deteksi Warna Biru Non-Blocking:**
-  - Pemrosesan citra webcam berjalan pada background thread terpisah sehingga rendering game tetap stabil pada **60 FPS**.
-  - Dilengkapi *horizontal mirror*, *morphological opening/closing*, *centroid calculation*, *zone hysteresis*, *temporal smoothing*, dan *cooldown* untuk mencegah jitter.
-- **Sistem Gameplay Menantang & Adil:**
-  - Mobil NPC dengan 4 variasi sprite mobil unik bergerak dari atas ke bawah.
-  - *Fair Spawn Algorithm*: Algoritma menjamin tidak pernah ada 3 jalur yang tertutup bersamaan, selalu ada celah bagi pemain untuk menghindar.
-  - Kepadatan dan kecepatan NPC meningkat secara bertahap seiring berjalannya waktu dan skor.
-- **Sistem Nyawa, Efek Tabrakan, & Invulnerability:**
-  - Pemain memiliki 3 nyawa (diwakili ikon hati).
-  - Saat tabrakan terjadi, nyawa berkurang 1, muncul efek ledakan partikel api & suara benturan, serta periode *invulnerability* (1,3 detik) dengan efek kedip untuk mencegah pengurangan nyawa ganda.
-- **Panel Dashboard & Webcam Preview:**
-  - Terletak rapi di sisi kanan layar ($X = 600 - 1000$ px), tidak pernah menutupi jalan atau mobil.
-  - Menampilkan live video webcam, garis pembatas 3 zona, kontur objek biru, titik centroid crosshair, status deteksi, serta tombol toggle mode HSV binary mask (`[M]`).
-- **Failsafe & Keyboard Fallback:**
-  - Jika webcam tidak terpasang/gagal dibuka, game otomatis menampilkan status peringatan dan beralih ke kontrol keyboard tanpa mengalami crash.
-- **Skor & High Score Lokal:**
-  - Skor bertambah berdasarkan waktu bertahan (+10/detik) dan bonus berhasil melewati NPC (+50/mobil).
-  - High score tersimpan otomatis secara lokal di `assets/highscore.json`.
+## Fitur Utama
 
----
+### 1. Sistem Tiga Jalur
 
-## 2. STRUKTUR FOLDER PROYEK
+Mobil pemain hanya bergerak di antara tiga jalur yang telah ditentukan:
 
-```
-hand_tracking_car_dodge/
-├── main.py                    # Entry point utama aplikasi
-├── config.py                  # Konfigurasi global, geometri jalur, & parameter HSV
-├── requirements.txt           # Dependensi pustaka Python
-├── README.md                  # Dokumentasi lengkap proyek
+| Jalur | Posisi X |
+|---|---:|
+| Kiri | 135 px |
+| Tengah | 305 px |
+| Kanan | 475 px |
+
+Posisi mobil disesuaikan dengan titik tengah jalur sehingga mobil tidak berhenti di antara dua jalur.
+
+### 2. Kontrol dengan Deteksi Objek Biru
+
+- Pemrosesan webcam dijalankan pada *background thread* agar tidak menghambat rendering game.
+- Frame webcam dibalik secara horizontal agar gerakan terasa seperti bercermin.
+- Pemrosesan dilengkapi *morphological opening/closing*, perhitungan centroid, *temporal smoothing*, dan *cooldown* untuk membantu mengurangi gangguan deteksi.
+- Gerakan objek biru ke kiri atau kanan digunakan untuk memindahkan mobil satu jalur.
+
+### 3. Gameplay dan Lalu Lintas
+
+- Mobil NPC memiliki empat variasi sprite.
+- NPC bergerak dari bagian atas ke bagian bawah layar.
+- Algoritma *fair spawn* dirancang agar tidak semua jalur tertutup secara bersamaan.
+- Kepadatan dan kecepatan NPC meningkat seiring waktu dan skor.
+
+### 4. Nyawa dan Efek Tabrakan
+
+- Pemain memulai permainan dengan tiga nyawa.
+- Tabrakan mengurangi satu nyawa dan memunculkan efek partikel serta suara benturan.
+- Periode *invulnerability* selama sekitar 1,3 detik membantu mencegah satu tabrakan mengurangi beberapa nyawa sekaligus.
+
+### 5. Dashboard dan Preview Webcam
+
+Panel di sisi kanan layar menampilkan preview webcam, pembagian zona, kontur objek biru, titik centroid, dan status deteksi. Tombol `M` digunakan untuk mengganti preview antara video asli dan *HSV binary mask*.
+
+### 6. Keyboard Fallback dan Skor
+
+- Jika webcam tidak tersedia, game menyediakan kontrol keyboard sebagai alternatif.
+- Skor bertambah berdasarkan waktu bertahan dan NPC yang berhasil dilewati.
+- *High score* disimpan secara lokal di `assets/highscore.json`.
+
+## Struktur Proyek
+
+```text
+Game_HSV/
+├── main.py
+├── config.py
+├── requirements.txt
+├── README.md
 ├── src/
 │   ├── __init__.py
-│   ├── game.py                # Game loop utama, event handler, & orkestrator
-│   ├── player.py              # Logika mobil pemain, interpolasi jalur, & nyawa
-│   ├── traffic.py             # Mobil NPC & algoritma fair procedural spawn
-│   ├── lane_manager.py        # Pengelola 3 jalur tetap & aturan transisi
-│   ├── hand_tracking.py       # Computer vision HSV tracker (non-blocking thread)
-│   ├── collision.py           # Collision detection & sistem partikel tabrakan
-│   ├── asset_manager.py       # Pemuat gambar, audio, font, & fallback caching
-│   ├── ui.py                  # Tombol interaktif, HUD dashboard, & layar menu
-│   └── state_manager.py       # State machine (HOME, PLAYING, PAUSED, GAME_OVER)
+│   ├── game.py
+│   ├── player.py
+│   ├── traffic.py
+│   ├── lane_manager.py
+│   ├── hand_tracking.py
+│   ├── collision.py
+│   ├── asset_manager.py
+│   ├── ui.py
+│   └── state_manager.py
 ├── assets/
 │   ├── backgrounds/
-│   │   ├── home_bg.png
-│   │   ├── road_bg.png
-│   │   └── game_over_bg.png
 │   ├── cars/
-│   │   ├── player_car.png
-│   │   ├── npc_car_01.png
-│   │   ├── npc_car_02.png
-│   │   ├── npc_car_03.png
-│   │   └── npc_car_04.png
 │   ├── ui/
-│   │   ├── heart_full.png
-│   │   ├── heart_empty.png
-│   │   ├── start_button.png
-│   │   ├── exit_button.png
-│   │   ├── restart_button.png
-│   │   ├── resume_button.png
-│   │   └── home_button.png
-│   └── audio/
-│       ├── collision.wav
-│       └── button_click.wav
+│   ├── audio/
+│   └── highscore.json
 ├── tests/
-│   ├── test_game_mechanics.py # Unit tests logika jalur, pemain, spawn, & HSV
-│   └── test_game_loop.py      # Integration test siklus game loop
+│   ├── test_game_mechanics.py
+│   └── test_game_loop.py
 └── tools/
-    └── generate_assets.py     # Script generator aset gambar & audio prosedural
+    └── generate_assets.py
 ```
 
----
+Nama atau file di atas menggambarkan struktur yang digunakan dalam dokumentasi. Jika struktur di folder lokal berbeda, sesuaikan bagian ini dengan isi repository yang sebenarnya.
 
-## 3. PERSYARATAN SISTEM & DEPENDENSI
+## Persyaratan Sistem
 
-- **Sistem Operasi:** Linux (Fedora, Ubuntu, Debian, Arch) atau Windows 10/11.
-- **Python:** Python 3.12 (disarankan) atau versi stabil yang didukung oleh Pygame 2.6+.
-- **Webcam:** Kamera webcam bawaan laptop atau USB webcam.
-- **Dependensi Python:**
+- **Sistem operasi:** Linux (termasuk Fedora, Ubuntu, Debian, atau Arch) atau Windows 10/11.
+- **Python:** Python 3.12 direkomendasikan.
+- **Webcam:** Webcam bawaan laptop atau webcam USB untuk kontrol berbasis warna.
+- **Pustaka Python:**
   - `pygame >= 2.6.0`
   - `opencv-python >= 4.8.0`
   - `numpy >= 1.26.0`
 
----
+Versi pustaka yang digunakan sebaiknya mengikuti `requirements.txt` di repository.
 
-## 4. PANDUAN INSTALASI & MENJALANKAN DI VS CODE
+## Instalasi
 
-### Langkah A: Buka Folder di VS Code
-1. Buka Visual Studio Code.
-2. Pilih menu **File > Open Folder...**, lalu buka folder direktori proyek (`Game_HSV`).
+### 1. Clone Repository
 
-### Langkah B: Pembuatan Virtual Environment
-Buka terminal terintegrasi di VS Code (`Ctrl + ~` atau menu **Terminal > New Terminal**).
-
-**Untuk Linux (Fedora / Ubuntu / Debian):**
 ```bash
-python3.12 -m venv .venv
+git clone https://github.com/rasyhaa/Project-1-Mini-Game-Based-on-Hand-Color.git
+cd Project-1-Mini-Game-Based-on-Hand-Color
+```
+
+Jika kamu sudah memiliki folder proyek lokal, buka folder tersebut dan lewati langkah clone.
+
+### 2. Buat Virtual Environment
+
+**Linux (Fedora/Ubuntu/Debian):**
+
+```bash
+python3 -m venv .venv
 source .venv/bin/activate
 ```
-*(Catatan Fedora Linux: Jika belum terpasang paket venv, pasang via `sudo dnf install python3.12 python3.12-pip`)*.
 
-**Untuk Windows (PowerShell / Command Prompt):**
+**Windows (PowerShell):**
+
 ```powershell
 python -m venv .venv
-.venv\Scripts\activate
+.\.venv\Scripts\Activate.ps1
 ```
 
-### Langkah C: Memilih Python Interpreter di VS Code
-1. Tekan `Ctrl + Shift + P` di VS Code untuk membuka Command Palette.
-2. Ketik **Python: Select Interpreter**.
-3. Pilih interpreter dari virtual environment yang baru dibuat: `./.venv/bin/python` (Linux) atau `.\.venv\Scripts\python.exe` (Windows).
+Jika PowerShell menolak aktivasi karena kebijakan eksekusi, gunakan Command Prompt:
 
-### Langkah D: Instal Dependensi
-Jalankan perintah berikut di terminal:
+```bat
+.venv\Scripts\activate.bat
+```
+
+### 3. Instal Dependensi
+
+Pastikan virtual environment sudah aktif, lalu jalankan:
+
 ```bash
+python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-### Langkah E: Menjalankan Game
-Jalankan game melalui file `main.py`:
+### 4. Pilih Python Interpreter di VS Code
+
+1. Buka Command Palette dengan `Ctrl + Shift + P`.
+2. Pilih **Python: Select Interpreter**.
+3. Pilih interpreter dari `.venv` di folder proyek.
+
+## Menjalankan Game
+
+Jalankan perintah berikut dari direktori utama proyek:
+
 ```bash
 python main.py
 ```
-*(Jika aset belum digenerate sebelumnya, game akan otomatis memanggil `tools/generate_assets.py` saat pertama kali dijalankan).*
 
----
+Jika aset belum tersedia, ikuti mekanisme pembuatan aset yang disediakan proyek, misalnya melalui `tools/generate_assets.py`.
 
-## 5. CARA KERJA KONTROL & COMPUTER VISION HSV
+## Kontrol Permainan
 
-### A. Kontrol Utama: Gerakan Tangan Objek Biru (Directional Motion Detection)
-Pemain mengendalikan arah mobil dengan menggerakkan objek berwarna biru di depan webcam (contoh: kartu biru, kain biru, sarung tangan, atau benda biru pekat).
+| Tombol / Gerakan | Fungsi |
+|---|---|
+| Gerakkan objek biru ke kanan | Pindah satu jalur ke kanan |
+| Gerakkan objek biru ke kiri | Pindah satu jalur ke kiri |
+| `A` atau `←` | Pindah satu jalur ke kiri |
+| `D` atau `→` | Pindah satu jalur ke kanan |
+| `P` atau `Esc` | Pause/resume permainan |
+| `M` | Ganti preview webcam dan HSV binary mask |
+| `R` | Restart saat Game Over |
 
-Deteksi bekerja secara relatif (*swipe / directional displacement*):
-- **Gerakkan tangan/objek biru ke Kanan ($\Delta x > +32\text{ px}$):** Mobil berpindah **satu jalur ke kanan**.
-- **Gerakkan tangan/objek biru ke Kiri ($\Delta x < -32\text{ px}$):** Mobil berpindah **satu jalur ke kiri**.
-- **Tangan diam / perlahan bergerak:** Mobil tetap berada di jalur saat ini tanpa berpindah sembarangan.
+Untuk kontrol berbasis warna, arahkan objek biru yang kontras—misalnya kartu, kain, atau sarung tangan—ke area yang terlihat oleh webcam. Gerakkan objek ke kiri atau kanan untuk berpindah jalur.
 
-### B. Tahapan Pemrosesan Citra HSV:
-1. **Frame Capture:** Frame dibaca secara asinkron dari kamera melalui `cv2.VideoCapture`.
-2. **Horizontal Flip:** Frame dibalik secara horizontal (`cv2.flip(frame, 1)`) agar pergerakan tangan terasa seperti cermin.
-3. **Color Space Conversion:** Frame dikonversi dari BGR ke HSV (`cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)`).
-4. **Color Thresholding:** `cv2.inRange(hsv, LOWER_BLUE, UPPER_BLUE)` menghasilkan binary mask di mana piksel biru bernilai 255 (putih) dan sisanya 0 (hitam).
-5. **Morphological Opening & Closing:**
-   - *Opening* (`MORPH_OPEN`, 5x5 kernel): Menghilangkan bintik-bintik noise kecil pada background.
-   - *Closing* (`MORPH_CLOSE`, 5x5 kernel): Mengisi lubang-lubang kecil pada objek biru agar kontur menyatu.
-6. **Contour Filtering:** Menghitung luas seluruh kontur dan memilih kontur terbesar yang luasnya melebihi `MIN_CONTOUR_AREA` (1000 px²).
-7. **Centroid Moments Calculation:** Titik pusat massa dihitung menggunakan momen spasial:
-   $$c_x = \frac{M_{10}}{M_{00}}, \quad c_y = \frac{M_{01}}{M_{00}}$$
-8. **Relative Motion & Gesture Logic:**
-   - **Baseline Reference:** Posisi awal tangan saat muncul dicatat sebagai acuan (`baseline_x`).
-   - **Swipe Displacement:** Dihitung $\Delta x = c_x - \text{baseline}_x$.
-   - **Gesture Cooldown (0,32 detik):** Setelah terjadi perpindahan satu jalur, sistem mengaktifkan jeda singkat agar gerakan satu ayunan tangan tidak menyebabkan mobil melompat berkali-kali.
-   - **Baseline Drift:** Ketika tangan diam, posisi acuan perlahan mengikuti posisi tangan dengan faktor redaman sehingga gerakan halus tidak memicu perpindahan yang tidak diinginkan.
-   - **Object Loss Preservation:** Jika objek biru hilang dari kamera, posisi mobil tetap terkunci di jalurnya.
+## Cara Kerja Deteksi HSV
 
-### C. Kontrol Alternatif (Keyboard Fallback):
-- **A** atau **Panah Kiri (←):** Pindah satu jalur ke kiri.
-- **D** atau **Panah Kanan (→):** Pindah satu jalur ke kanan.
-- **P** atau **ESC:** Pause / Resume permainan.
-- **M:** Toggle tampilan webcam antara mode video asli dan mode **HSV Binary Mask**.
-- **R:** Restart permainan saat Game Over.
+Proses deteksi objek biru secara umum terdiri dari langkah berikut:
 
----
+1. **Pengambilan frame:** Frame dibaca dari webcam menggunakan `cv2.VideoCapture`.
+2. **Horizontal flip:** Frame dibalik dengan `cv2.flip(frame, 1)` agar gerakan terlihat seperti cermin.
+3. **Konversi warna:** Frame diubah dari BGR ke HSV menggunakan `cv2.cvtColor`.
+4. **Thresholding:** `cv2.inRange()` membuat *binary mask* berdasarkan rentang HSV yang ditentukan.
+5. **Operasi morfologi:** *Opening* membantu mengurangi noise kecil, sedangkan *closing* membantu menyambungkan bagian objek yang terputus.
+6. **Penyaringan kontur:** Kontur dievaluasi berdasarkan luas minimum.
+7. **Perhitungan centroid:** Titik pusat objek dihitung menggunakan momen spasial:
 
-## 6. KALIBRASI THRESHOLD HSV
+   \[
+   c_x = \frac{M_{10}}{M_{00}}, \qquad
+   c_y = \frac{M_{01}}{M_{00}}
+   \]
 
-Threshold warna biru diatur di dalam file [config.py](file:///home/rasyhaaa/Documents/Game_HSV/config.py):
+8. **Deteksi gerakan:** Perubahan posisi horizontal objek digunakan untuk menentukan arah perpindahan mobil. *Cooldown* membantu mencegah satu gerakan terhitung berkali-kali.
+
+## Kalibrasi HSV
+
+Rentang HSV dapat disesuaikan pada konfigurasi proyek, biasanya di `config.py`.
+
+Contoh rentang warna biru:
 
 ```python
-# Rentang HSV warna biru (H: 0-180, S: 0-255, V: 0-255)
 LOWER_BLUE = np.array([90, 80, 50], dtype=np.uint8)
 UPPER_BLUE = np.array([135, 255, 255], dtype=np.uint8)
 ```
 
-### Tips Kalibrasi Berdasarkan Pencahayaan:
-1. Tekan tombol **`M`** saat game berjalan untuk melihat **HSV Mask Preview** di panel kanan.
-2. Jika objek biru Anda tampak bolong-bolong atau kurang putih penuh:
-   - Turunkan nilai *Saturation* minimum (misal dari 80 ke 60).
-   - Turunkan nilai *Value* minimum (misal dari 50 ke 40) jika ruangan sedikit redup.
-3. Jika latar belakang ruangan (tembok/baju) ikut terdeteksi:
-   - Naikkan nilai *Saturation* minimum (misal dari 80 ke 110).
-   - Pastikan objek biru memiliki warna yang kontras dengan pakaian Anda.
+Nilai tersebut merupakan titik awal dan mungkin perlu disesuaikan berdasarkan pencahayaan, kamera, dan warna objek.
 
----
+### Tips Kalibrasi
 
-## 7. MENJALANKAN PENGUJIAN OTOMATIS (UNIT TESTS)
+1. Jalankan game dan tekan `M` untuk melihat *HSV binary mask* jika fitur tersebut tersedia.
+2. Jika objek biru tampak terputus atau tidak terdeteksi penuh, coba turunkan batas minimum *saturation* atau *value* secara bertahap.
+3. Jika latar belakang ikut terdeteksi, coba naikkan batas minimum *saturation* atau sesuaikan rentang hue.
+4. Gunakan objek biru yang kontras dengan lingkungan dan hindari pencahayaan yang berubah-ubah.
 
-Untuk memverifikasi seluruh komponen tanpa perlu membuka kamera:
+## Menjalankan Pengujian
+
+Jika direktori `tests/` tersedia, jalankan pengujian dari direktori utama proyek:
+
 ```bash
 python -m unittest discover -s tests -p "test_*.py"
 ```
-Semua 13 pengujian (logika jalur, invulnerability, pergerakan pemain, algoritma fair spawn NPC, deteksi tabrakan, dan pemrosesan HSV sintetis) akan dijalankan secara otomatis.
+
+Pengujian yang disediakan dapat mencakup logika jalur, pergerakan pemain, tabrakan, algoritma spawn NPC, dan pemrosesan HSV. Jumlah serta cakupan tes yang berhasil dijalankan mengikuti implementasi terbaru dalam repository.
+
+## Troubleshooting
+
+| Masalah | Kemungkinan penyebab | Solusi |
+|---|---|---|
+| Webcam tidak terbuka | Webcam digunakan aplikasi lain atau indeks kamera tidak sesuai | Tutup aplikasi lain yang menggunakan webcam. Periksa pengaturan indeks kamera di `config.py`. |
+| Tidak ada izin webcam di Linux | Izin perangkat belum sesuai | Periksa izin perangkat dan konfigurasi grup pengguna. Jika perlu, tambahkan pengguna ke grup `video`, lalu masuk kembali ke sesi. |
+| Audio tidak terdengar | Perangkat atau layanan audio tidak tersedia | Periksa pengaturan audio sistem dan output audio yang digunakan. |
+| Mobil tidak berpindah jalur | Objek biru tidak terdeteksi atau luas kontur di bawah batas minimum | Perbaiki pencahayaan, dekatkan objek ke kamera, atau sesuaikan parameter HSV dan luas kontur di konfigurasi. |
+| Banyak objek lain ikut terdeteksi | Warna latar belakang mirip dengan objek target | Sesuaikan rentang HSV dan gunakan objek biru yang lebih kontras. |
+| Dependensi gagal dipasang | Versi Python atau pustaka tidak cocok | Pastikan virtual environment aktif dan gunakan versi dependensi yang sesuai dengan `requirements.txt`. |
 
 ---
 
-## 8. TROUBLESHOOTING
+## Kredit dan Catatan
 
-| Gejala | Penyebab Umum | Solusi |
-|---|---|---|
-| **Webcam tidak terbuka / "NO WEBCAM DETECTED"** | Webcam digunakan aplikasi lain (Zoom, browser) atau indeks salah. | Tutup aplikasi lain yang memakai webcam. Jika memiliki webcam eksternal, ubah `WEBCAM_INDEX = 1` di `config.py`. Anda tetap dapat bermain menggunakan keyboard. |
-| **Izin webcam di Linux** | User belum masuk ke grup `video`. | Jalankan perintah `sudo usermod -aG video $USER`, lalu restart terminal/sesi. |
-| **Audio tidak bersuara di Linux** | Sistem audio ALSA/PulseAudio tidak aktif. | Game otomatis menonaktifkan audio secara aman tanpa crash jika audio server tidak ditemukan. |
-| **Mobil tidak mau berpindah jalur** | Luas objek biru kurang dari `MIN_CONTOUR_AREA`. | Dekatkan objek biru ke kamera atau turunkan nilai `MIN_CONTOUR_AREA` di `config.py` (misal ke 800). |
-=======
-# Project-1-Mini-Game-Based-on-Hand-Color
-Project 1 - Mini Game Based on Hand Color
->>>>>>> a3c6c10508770c8c9fdb559c8ff914626bd9265b
+Proyek ini dibuat sebagai **Project 1 — Mini Game Based on Hand Color**, dengan pendekatan computer vision klasik menggunakan OpenCV dan gameplay 2D menggunakan Pygame.
+
+Pastikan dokumentasi dan struktur folder diperbarui apabila implementasi proyek berubah.
