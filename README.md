@@ -14,7 +14,6 @@ Game arcade balapan mobil 2D dengan sudut pandang *top-down*. Pemain mengendalik
 - [Kontrol Permainan](#kontrol-permainan)
 - [Cara Kerja Deteksi HSV](#cara-kerja-deteksi-hsv)
 - [Kalibrasi HSV](#kalibrasi-hsv)
-- [Menjalankan Pengujian](#menjalankan-pengujian)
 - [Troubleshooting](#troubleshooting)
 
 ## Fitur Utama
@@ -65,35 +64,22 @@ Panel di sisi kanan layar menampilkan preview webcam, pembagian zona, kontur obj
 
 ```text
 Game_HSV/
-├── main.py
-├── config.py
-├── requirements.txt
-├── README.md
-├── src/
-│   ├── __init__.py
-│   ├── game.py
-│   ├── player.py
-│   ├── traffic.py
-│   ├── lane_manager.py
-│   ├── hand_tracking.py
-│   ├── collision.py
-│   ├── asset_manager.py
-│   ├── ui.py
-│   └── state_manager.py
 ├── assets/
 │   ├── backgrounds/
 │   ├── cars/
 │   ├── ui/
-│   ├── audio/
 │   └── highscore.json
-├── tests/
-│   ├── test_game_mechanics.py
-│   └── test_game_loop.py
-└── tools/
-    └── generate_assets.py
+├── game/
+│   ├── assets.py
+│   ├── camera.py
+│   ├── config.py
+│   ├── entities.py
+│   ├── game.py
+│   └── particles.py
+├── main.py
+├── README.md
+└── requirements.txt
 ```
-
-Nama atau file di atas menggambarkan struktur yang digunakan dalam dokumentasi. Jika struktur di folder lokal berbeda, sesuaikan bagian ini dengan isi repository yang sebenarnya.
 
 ## Persyaratan Sistem
 
@@ -200,7 +186,7 @@ Proses deteksi objek biru secara umum terdiri dari langkah berikut:
 
 ## Kalibrasi HSV
 
-Rentang HSV dapat disesuaikan pada konfigurasi proyek, biasanya di `config.py`.
+Rentang HSV dapat disesuaikan pada konfigurasi proyek di `game/config.py`.
 
 Contoh rentang warna biru:
 
@@ -213,20 +199,10 @@ Nilai tersebut merupakan titik awal dan mungkin perlu disesuaikan berdasarkan pe
 
 ### Tips Kalibrasi
 
-1. Jalankan game dan tekan `M` untuk melihat *HSV binary mask* jika fitur tersebut tersedia.
+1. Jalankan game dan gerakkan objek biru di depan webcam.
 2. Jika objek biru tampak terputus atau tidak terdeteksi penuh, coba turunkan batas minimum *saturation* atau *value* secara bertahap.
 3. Jika latar belakang ikut terdeteksi, coba naikkan batas minimum *saturation* atau sesuaikan rentang hue.
 4. Gunakan objek biru yang kontras dengan lingkungan dan hindari pencahayaan yang berubah-ubah.
-
-## Menjalankan Pengujian
-
-Jika direktori `tests/` tersedia, jalankan pengujian dari direktori utama proyek:
-
-```bash
-python -m unittest discover -s tests -p "test_*.py"
-```
-
-Pengujian yang disediakan dapat mencakup logika jalur, pergerakan pemain, tabrakan, algoritma spawn NPC, dan pemrosesan HSV. Jumlah serta cakupan tes yang berhasil dijalankan mengikuti implementasi terbaru dalam repository.
 
 ## Troubleshooting
 

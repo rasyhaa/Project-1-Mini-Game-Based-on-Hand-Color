@@ -5,7 +5,7 @@ import numpy as np
 ENABLE_SOUND = False
 
 # Directories and paths
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ASSETS_DIR = os.path.join(BASE_DIR, "assets")
 
 BG_DIR = os.path.join(ASSETS_DIR, "backgrounds")
@@ -20,11 +20,6 @@ FPS = 60
 WINDOW_TITLE = "Hand Tracking Car Game"
 
 # Road and lane geometry
-# Road asphalt covers x = 50 to 560 (width = 510)
-# 3 Fixed Lanes, each 170 px wide:
-# Lane 0 (Left):   [50,  220] -> Center = 135
-# Lane 1 (Center): [220, 390] -> Center = 305
-# Lane 2 (Right):  [390, 560] -> Center = 475
 ROAD_LEFT = 50
 ROAD_RIGHT = 560
 ROAD_WIDTH = ROAD_RIGHT - ROAD_LEFT
