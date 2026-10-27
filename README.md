@@ -246,6 +246,6 @@ Nilai tersebut merupakan titik awal dan mungkin perlu disesuaikan berdasarkan pe
 
 ---
 
-## 👨‍💻 Author
+## Author
 
 **Muhammad Rasyha Syauqi Islam (5024241066)**  
