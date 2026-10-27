@@ -26,7 +26,9 @@ Berikut adalah tampilan antarmuka visual dari game:
 
 ### 2. Gameplay (Saat Permainan Berlangsung)
 ![Gameplay Permainan](dokumentasi/dokum%20game.png)
+Berikut adalah demonstrasi gameplay selama 14 detik, yang menunjukkan sistem kontrol menggunakan deteksi warna biru berbasis HSV.
 
+https://github.com/user-attachments/assets/bc43e23f-9ddd-4289-bda3-49bf3bc4a67c
 ### 3. Layar Game Over
 ![Layar Game Over](dokumentasi/dokum%20gameover.png)
 
