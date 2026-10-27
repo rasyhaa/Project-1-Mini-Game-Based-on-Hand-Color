@@ -36,11 +36,9 @@ Berikut adalah tampilan antarmuka visual dari game:
 
 Mobil pemain hanya bergerak di antara tiga jalur yang telah ditentukan:
 
-| Jalur | Posisi X |
-|---|---:|
-| Kiri | 135 px |
-| Tengah | 305 px |
-| Kanan | 475 px |
+- **Jalur Kiri**: 135 px
+- **Jalur Tengah**: 305 px
+- **Jalur Kanan**: 475 px
 
 Posisi mobil disesuaikan dengan titik tengah jalur sehingga mobil tidak berhenti di antara dua jalur.
 
@@ -167,19 +165,15 @@ Jalankan perintah berikut dari direktori utama proyek:
 python main.py
 ```
 
-Jika aset belum tersedia, ikuti mekanisme pembuatan aset yang disediakan proyek, misalnya melalui `tools/generate_assets.py`.
-
 ## Kontrol Permainan
 
-| Tombol / Gerakan | Fungsi |
-|---|---|
-| Gerakkan objek biru ke kanan | Pindah satu jalur ke kanan |
-| Gerakkan objek biru ke kiri | Pindah satu jalur ke kiri |
-| `A` atau `←` | Pindah satu jalur ke kiri |
-| `D` atau `→` | Pindah satu jalur ke kanan |
-| `P` atau `Esc` | Pause/resume permainan |
-| `M` | Ganti preview webcam dan HSV binary mask |
-| `R` | Restart saat Game Over |
+- **Gerakkan objek biru ke kanan**: Pindah satu jalur ke kanan
+- **Gerakkan objek biru ke kiri**: Pindah satu jalur ke kiri
+- **`A` atau `←`**: Pindah satu jalur ke kiri (keyboard fallback)
+- **`D` atau `→`**: Pindah satu jalur ke kanan (keyboard fallback)
+- **`P` atau `Esc`**: Pause / resume permainan
+- **`R`**: Restart permainan saat Game Over
+- **`Enter` atau `Space`**: Mulai game saat berada di Menu Utama
 
 Untuk kontrol berbasis warna, arahkan objek biru yang kontras—misalnya kartu, kain, atau sarung tangan—ke area yang terlihat oleh webcam. Gerakkan objek ke kiri atau kanan untuk berpindah jalur.
 
@@ -224,14 +218,25 @@ Nilai tersebut merupakan titik awal dan mungkin perlu disesuaikan berdasarkan pe
 
 ## Troubleshooting
 
-| Masalah | Kemungkinan penyebab | Solusi |
-|---|---|---|
-| Webcam tidak terbuka | Webcam digunakan aplikasi lain atau indeks kamera tidak sesuai | Tutup aplikasi lain yang menggunakan webcam. Periksa pengaturan indeks kamera di `config.py`. |
-| Tidak ada izin webcam di Linux | Izin perangkat belum sesuai | Periksa izin perangkat dan konfigurasi grup pengguna. Jika perlu, tambahkan pengguna ke grup `video`, lalu masuk kembali ke sesi. |
-| Audio tidak terdengar | Perangkat atau layanan audio tidak tersedia | Periksa pengaturan audio sistem dan output audio yang digunakan. |
-| Mobil tidak berpindah jalur | Objek biru tidak terdeteksi atau luas kontur di bawah batas minimum | Perbaiki pencahayaan, dekatkan objek ke kamera, atau sesuaikan parameter HSV dan luas kontur di konfigurasi. |
-| Banyak objek lain ikut terdeteksi | Warna latar belakang mirip dengan objek target | Sesuaikan rentang HSV dan gunakan objek biru yang lebih kontras. |
-| Dependensi gagal dipasang | Versi Python atau pustaka tidak cocok | Pastikan virtual environment aktif dan gunakan versi dependensi yang sesuai dengan `requirements.txt`. |
+- **Webcam tidak terbuka**
+  - *Kemungkinan penyebab*: Webcam sedang digunakan oleh aplikasi lain atau indeks kamera di sistem tidak sesuai.
+  - *Solusi*: Tutup aplikasi lain yang mengakses webcam, lalu periksa pengaturan indeks kamera (`WEBCAM_INDEX`) di `game/config.py`.
+
+- **Tidak ada izin akses webcam di Linux**
+  - *Kemungkinan penyebab*: Pengguna belum memiliki izin akses ke perangkat video.
+  - *Solusi*: Tambahkan pengguna ke grup video dengan perintah `sudo usermod -aG video $USER`, lalu logout dan masuk kembali ke sesi sistem.
+
+- **Mobil tidak berpindah jalur**
+  - *Kemungkinan penyebab*: Objek biru tidak terdeteksi, pencahayaan kurang, atau luas kontur di bawah batas minimum.
+  - *Solusi*: Dekatkan objek ke webcam, perbaiki pencahayaan ruangan, atau sesuaikan nilai `MIN_CONTOUR_AREA` dan rentang HSV di `game/config.py`.
+
+- **Banyak objek lain ikut terdeteksi**
+  - *Kemungkinan penyebab*: Warna latar belakang atau pakaian mirip dengan warna target.
+  - *Solusi*: Gunakan objek biru yang lebih pekat dan kontras dengan latar belakang, atau persempit rentang warna HSV di `game/config.py`.
+
+- **Dependensi gagal dipasang**
+  - *Kemungkinan penyebab*: Versi Python tidak kompatibel atau virtual environment belum aktif.
+  - *Solusi*: Pastikan virtual environment telah diaktifkan dan gunakan Python 3.12 dengan dependensi di `requirements.txt`.
 
 ---
 
