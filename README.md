@@ -245,3 +245,7 @@ Nilai tersebut merupakan titik awal dan mungkin perlu disesuaikan berdasarkan pe
   - _Solusi_: Pastikan virtual environment telah diaktifkan dan gunakan Python 3.12 dengan dependensi di `requirements.txt`.
 
 ---
+
+## 👨‍💻 Author
+
+**Muhammad Rasyha Syauqi Islam (5024241066)**  
