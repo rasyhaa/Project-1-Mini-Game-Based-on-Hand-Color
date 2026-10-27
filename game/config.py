@@ -1,7 +1,6 @@
 import os
 import numpy as np
 
-# Audio setting (sound disabled)
 ENABLE_SOUND = False
 
 # Directories and paths
@@ -25,9 +24,9 @@ ROAD_RIGHT = 560
 ROAD_WIDTH = ROAD_RIGHT - ROAD_LEFT
 LANE_WIDTH = ROAD_WIDTH // 3
 LANE_CENTERS = [
-    ROAD_LEFT + LANE_WIDTH // 2,                     # Lane 0: 135
-    ROAD_LEFT + LANE_WIDTH + LANE_WIDTH // 2,         # Lane 1: 305
-    ROAD_LEFT + (2 * LANE_WIDTH) + LANE_WIDTH // 2   # Lane 2: 475
+    ROAD_LEFT + LANE_WIDTH // 2,                     
+    ROAD_LEFT + LANE_WIDTH + LANE_WIDTH // 2,         
+    ROAD_LEFT + (2 * LANE_WIDTH) + LANE_WIDTH // 2   
 ]
 LANE_COUNT = 3
 
@@ -41,17 +40,17 @@ PLAYER_Y = 560
 PLAYER_WIDTH = 64
 PLAYER_HEIGHT = 110
 PLAYER_LIVES = 3
-LANE_CHANGE_LERP_SPEED = 22.0   # Smooth interpolation towards target lane center
-INVULNERABILITY_DURATION = 1.3  # Seconds of invulnerability and blinking after crash
+LANE_CHANGE_LERP_SPEED = 22.0   
+INVULNERABILITY_DURATION = 1.3  
 
 # Traffic and NPC settings
-SCROLL_SPEED = 320.0            # Base road scrolling speed (pixels/sec)
-BASE_NPC_SPEED = 260.0          # Base NPC downward velocity relative to road
-MAX_NPC_SPEED = 520.0           # Maximum NPC downward velocity
-BASE_SPAWN_INTERVAL = 1.25      # Initial spawn interval in seconds
-MIN_SPAWN_INTERVAL = 0.55       # Minimum spawn interval under peak difficulty
-MIN_NPC_VERTICAL_GAP = 230      # Minimum vertical distance between consecutive cars in same lane
-MAX_ACTIVE_NPCS = 6             # Upper bound of concurrent NPCs
+SCROLL_SPEED = 320.0            
+BASE_NPC_SPEED = 260.0          
+MAX_NPC_SPEED = 520.0           
+BASE_SPAWN_INTERVAL = 1.25      
+MIN_SPAWN_INTERVAL = 0.55       
+MIN_NPC_VERTICAL_GAP = 230      
+MAX_ACTIVE_NPCS = 6             
 
 # NPC Car Dimensions
 NPC_WIDTH = 64
@@ -60,7 +59,7 @@ NPC_HEIGHT = 110
 # Scoring and difficulty
 SCORE_PER_SECOND = 10
 SCORE_PER_PASS = 50
-DIFFICULTY_RAMP_INTERVAL = 10.0 # Increase difficulty every 10 seconds
+DIFFICULTY_RAMP_INTERVAL = 10.0 
 
 # HSV blue color detection and webcam motion tracking
 WEBCAM_INDEX = 0
@@ -74,12 +73,12 @@ LOWER_BLUE = np.array([90, 80, 50], dtype=np.uint8)
 UPPER_BLUE = np.array([135, 255, 255], dtype=np.uint8)
 
 # Contour filtering
-MIN_CONTOUR_AREA = 1000         # Ignore contours smaller than this area (px^2)
+MIN_CONTOUR_AREA = 1000        
 
 # Dynamic Hand Motion / Swipe Detection
-SWIPE_THRESHOLD_PX = 32         # Horizontal movement distance (px) to trigger lane shift
-GESTURE_COOLDOWN = 0.32         # Cooldown in seconds between consecutive lane shifts
-BASELINE_DRIFT_FACTOR = 0.06    # Leaky baseline adjustment rate for gentle drift
+SWIPE_THRESHOLD_PX = 32         
+GESTURE_COOLDOWN = 0.32         
+BASELINE_DRIFT_FACTOR = 0.06    
 
 # Colors (RGB and RGBA)
 COLOR_BLACK = (0, 0, 0)

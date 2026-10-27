@@ -6,6 +6,7 @@ Game arcade balapan mobil 2D dengan sudut pandang *top-down*. Pemain mengendalik
 
 ## Daftar Isi
 
+- [Dokumentasi Permainan](#dokumentasi-permainan)
 - [Fitur Utama](#fitur-utama)
 - [Struktur Proyek](#struktur-proyek)
 - [Persyaratan Sistem](#persyaratan-sistem)
@@ -15,6 +16,19 @@ Game arcade balapan mobil 2D dengan sudut pandang *top-down*. Pemain mengendalik
 - [Cara Kerja Deteksi HSV](#cara-kerja-deteksi-hsv)
 - [Kalibrasi HSV](#kalibrasi-hsv)
 - [Troubleshooting](#troubleshooting)
+
+## Dokumentasi Permainan
+
+Berikut adalah tampilan antarmuka visual dari game:
+
+### 1. Menu Utama (Home Screen)
+![Menu Utama](dokumentasi/dokum%20home.png)
+
+### 2. Gameplay (Saat Permainan Berlangsung)
+![Gameplay Permainan](dokumentasi/dokum%20game.png)
+
+### 3. Layar Game Over
+![Layar Game Over](dokumentasi/dokum%20gameover.png)
 
 ## Fitur Utama
 
@@ -69,6 +83,10 @@ Game_HSV/
 │   ├── cars/
 │   ├── ui/
 │   └── highscore.json
+├── dokumentasi/
+│   ├── dokum home.png
+│   ├── dokum game.png
+│   └── dokum gameover.png
 ├── game/
 │   ├── assets.py
 │   ├── camera.py
